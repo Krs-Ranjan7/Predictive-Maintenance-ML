@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NALCO Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f9; margin:0; padding:0; }
+    header { background:#003366; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+    header h2 { margin:0; }
+    header a { color:white; text-decoration:none; font-weight:bold; margin-left:10px; }
+    .container { padding:20px; }
+    .cards { display:grid; grid-template-columns: repeat(2,1fr); gap:20px; margin-top:20px; }
+    .card { background:white; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    .card h3 { margin-top:0; color:#003366; }
+    .card a { display:inline-block; margin-top:10px; text-decoration:none; color:#003366; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>NALCO Predictive Maintenance Dashboard</h2>
+    <div>
+      Welcome, <b>{{ user }}</b> | <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="cards">
+      <div class="card">
+        <h3>📊 Live Data</h3>
+        <p>Monitor real-time equipment readings.</p>
+        <a href="{{ url_for('dashboard') }}">View Dashboard</a>
+      </div>
+      <div class="card">
+        <h3>🧠 Predictions</h3>
+        <p>See upcoming potential failures.</p>
+        <a href="{{ url_for('predictions_page') }}">View Predictions</a>
+      </div>
+      <div class="card">
+        <h3>🛠 Maintenance</h3>
+        <p>Scheduled maintenance tasks.</p>
+        <a href="{{ url_for('maintenance_page') }}">View Maintenance</a>
+      </div>
+      <div class="card">
+        <h3>📈 Reports</h3>
+        <p>Equipment performance reports.</p>
+        <a href="{{ url_for('reports_page') }}">View Reports</a>
+      </div>
+      <div class="card">
+        <h3>⚠️ Alerts</h3>
+        <p>Failures and high-risk predictions.</p>
+        <a href="{{ url_for('alerts_page') }}">View Alerts</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

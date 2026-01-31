@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - NALCO Predictive Maintenance System</title>
+    <style>
+        /* Ensure consistent box sizing across all elements */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #003366, #005599);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            text-align: center;
+            width: 500px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #003366;
+            font-weight: bold;
+            font-size: 28px;
+        }
+
+        .error-box {
+            background: #ffe6e6;
+            color: #cc0000;
+            border: 1px solid #cc0000;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"],
+        .login-container button {
+            width: 100%;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            border: 1px solid #ccc;
+        }
+
+        .login-container button {
+            background: #005599;
+            color: white;
+            border: none;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-container button:hover {
+            background: #003366;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="https://tse2.mm.bing.net/th/id/OIP.K64diSIp4P071aM3pT6KdQHaHa?pid=ImgDet&w=178&h=178&c=7&dpr=1.5&o=7&rm=3" 
+             alt="NALCO Logo" 
+             style="width:120px; height:120px; margin-bottom: 15px;">
+        
+        <h2>NALCO Predictive Maintenance System Login</h2>
+
+        {% if error %}
+            <div class="error-box">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

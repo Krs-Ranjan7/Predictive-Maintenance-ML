@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reports - NALCO</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; }
+    header { background:#003366; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+    header a { color:white; text-decoration:none; margin-left:10px; font-weight:bold; }
+    .container { padding:20px; }
+    table { width:100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-top:20px; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:center; }
+    th { background:#003366; color:white; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>Reports</div>
+    <div><a href="{{ url_for('main') }}">⬅ Back</a> | Welcome, <b>{{ user }}</b> | <a href="{{ url_for('logout') }}">Logout</a></div>
+  </header>
+
+  <div class="container">
+    <h3>Equipment Summary Reports</h3>
+    <table>
+      <tr>
+        <th>Equipment</th>
+        <th>Avg Temperature</th>
+        <th>Avg Vibration</th>
+        <th>Avg Pressure</th>
+        <th>Total Failures</th>
+      </tr>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1]|round(2) }}</td>
+        <td>{{ row[2]|round(4) }}</td>
+        <td>{{ row[3]|round(2) }}</td>
+        <td>{{ row[4] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>

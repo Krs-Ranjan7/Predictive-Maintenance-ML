@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maintenance Tasks - NALCO</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6f9; margin:0; padding:0; }
+    header { background:#003366; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+    header a { color:white; text-decoration:none; font-weight:bold; margin-left:10px; }
+    .container { padding:20px; }
+    h3 { color:#003366; margin-bottom:15px; }
+    table { width:100%; border-collapse: collapse; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    th, td { border:1px solid #ddd; padding:10px; text-align:center; }
+    th { background:#003366; color:white; }
+    tr:nth-child(even){ background:#f9f9f9; }
+    .status-pending { color:orange; font-weight:bold; }
+    .status-done { color:green; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>NALCO Predictive Maintenance</div>
+    <div>
+      <a href="{{ url_for('main') }}">⬅ Back</a>
+      Welcome, <b>{{ user }}</b> | <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h3>Scheduled Maintenance Tasks</h3>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Equipment</th>
+        <th>Description</th>
+        <th>Scheduled Date</th>
+        <th>Status</th>
+      </tr>
+      {% for task in tasks %}
+      <tr>
+        <td>{{ task.id }}</td>
+        <td>{{ task.equipment_id }}</td>
+        <td>{{ task.description }}</td>
+        <td>{{ task.scheduled_date }}</td>
+        <td class="{{ 'status-pending' if task.status=='Pending' else 'status-done' }}">{{ task.status }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>

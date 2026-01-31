@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f9; margin:0; padding:0; }
+    header { background:#003366; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+    header h2 { margin:0; }
+    header a { color:white; text-decoration:none; font-weight:bold; margin-left:10px; }
+    .container { padding:20px; }
+    h3 { color:#003366; margin-bottom:15px; }
+    table { width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    th, td { border:1px solid #ddd; padding:10px; text-align:center; }
+    th { background:#003366; color:white; }
+    tr:nth-child(even) { background:#f9f9f9; }
+    .failure-row { background:#ffcccc; font-weight:bold; color:#a10000; }
+    .charts { margin-top:40px; display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+    .chart-box { background:white; padding:10px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); height:280px; }
+    canvas { width:100% !important; height:100% !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>NALCO Predictive Maintenance Dashboard</h2>
+    <div>
+      Welcome, <b>{{ user }}</b> | <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h3>📊 Live Equipment Data</h3>
+    <table id="data-table">
+      <tr>
+        <th>Timestamp</th>
+        <th>Equipment</th>
+        <th>Usage Hours</th>
+        <th>Temperature</th>
+        <th>Vibration</th>
+        <th>Pressure</th>
+        <th>Failure</th>
+      </tr>
+    </table>
+
+    <div class="charts">
+      <div class="chart-box"><canvas id="tempChart"></canvas></div>
+      <div class="chart-box"><canvas id="vibChart"></canvas></div>
+      <div class="chart-box"><canvas id="pressureChart"></canvas></div>
+      <div class="chart-box"><canvas id="usageChart"></canvas></div>
+    </div>
+  </div>
+
+  <script>
+    let tempChart, vibChart, pressureChart, usageChart;
+
+    async function fetchData() {
+      let res = await fetch("/api/readings");
+      let data = await res.json();
+
+      // Update Table
+      let table = document.getElementById("data-table");
+      table.innerHTML = `
+        <tr>
+          <th>Timestamp</th>
+          <th>Equipment</th>
+          <th>Usage Hours</th>
+          <th>Temperature</th>
+          <th>Vibration</th>
+          <th>Pressure</th>
+          <th>Failure</th>
+        </tr>`;
+      data.forEach(r => {
+        let rowClass = r.failure === 1 ? "failure-row" : "";
+        table.innerHTML += `
+          <tr class="${rowClass}">
+            <td>${r.timestamp}</td>
+            <td>${r.equipment_id}</td>
+            <td>${r.usage_hours.toFixed(2)}</td>
+            <td>${r.temperature.toFixed(2)}</td>
+            <td>${r.vibration.toFixed(4)}</td>
+            <td>${r.pressure.toFixed(2)}</td>
+            <td>${r.failure}</td>
+          </tr>`;
+      });
+
+      let labels = data.map(r=>r.timestamp).reverse();
+      let temps = data.map(r=>r.temperature).reverse();
+      let vibs = data.map(r=>r.vibration).reverse();
+      let pressures = data.map(r=>r.pressure).reverse();
+      let usage = data.map(r=>r.usage_hours).reverse();
+
+      function buildChart(ctx,label,dataArr,colors,title){
+        return new Chart(ctx,{
+          type:"line",
+          data:{ labels, datasets:[{label,data:dataArr,borderColor:"black",pointBackgroundColor:colors,fill:false,tension:0.3}]},
+          options:{plugins:{title:{display:true,text:title,font:{size:14,weight:"bold"}},legend:{position:"bottom"}},responsive:true,maintainAspectRatio:false}
+        });
+      }
+
+      let tempColors = temps.map(v=>v>70?"red":"green");
+      let vibColors = vibs.map(v=>v>0.02?"red":"blue");
+      let pressureColors = pressures.map(v=>(v<100||v>115)?"orange":"green");
+      let usageColors = usage.map(v=>v>6?"red":"purple");
+
+      if(tempChart) tempChart.destroy();
+      tempChart = buildChart(document.getElementById("tempChart"),"Temperature (°C)",temps,tempColors,"Temperature Trend");
+      if(vibChart) vibChart.destroy();
+      vibChart = buildChart(document.getElementById("vibChart"),"Vibration",vibs,vibColors,"Vibration Trend");
+      if(pressureChart) pressureChart.destroy();
+      pressureChart = buildChart(document.getElementById("pressureChart"),"Pressure",pressures,pressureColors,"Pressure Trend");
+      if(usageChart) usageChart.destroy();
+      usageChart = buildChart(document.getElementById("usageChart"),"Usage Hours",usage,usageColors,"Usage Hours Trend");
+    }
+
+    setInterval(fetchData,5000);
+    fetchData();
+  </script>
+</body>
+</html>

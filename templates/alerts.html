@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alerts - NALCO</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; }
+    header { background:#003366; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+    header a { color:white; text-decoration:none; margin-left:10px; font-weight:bold; }
+    .container { padding:20px; }
+    h3 { color:#003366; margin-bottom:10px; }
+    table { width:100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom:30px; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:center; }
+    th { background:#003366; color:white; }
+    .failure-row { background-color: #ffcccc; font-weight:bold; color:#a10000; }
+    .risk-row { background-color: #fff0e6; font-weight:bold; color:#a65a00; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>Alerts</div>
+    <div><a href="{{ url_for('main') }}">⬅ Back</a> | Welcome, <b>{{ user }}</b> | <a href="{{ url_for('logout') }}">Logout</a></div>
+  </header>
+
+  <div class="container">
+    <h3>Recent Failures</h3>
+    <table>
+      <tr>
+        <th>Timestamp</th>
+        <th>Equipment</th>
+        <th>Failure</th>
+      </tr>
+      {% for f in fails %}
+      <tr class="failure-row">
+        <td>{{ f[0] }}</td>
+        <td>{{ f[1] }}</td>
+        <td>{{ f[2] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <h3>High-Risk Predictions</h3>
+    <table>
+      <tr>
+        <th>Timestamp</th>
+        <th>Equipment</th>
+        <th>Predicted Probability</th>
+      </tr>
+      {% for r in risks %}
+      <tr class="risk-row">
+        <td>{{ r[0] }}</td>
+        <td>{{ r[1] }}</td>
+        <td>{{ (r[2]*100)|round(1) }}%</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>
